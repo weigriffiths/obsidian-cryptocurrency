@@ -23,7 +23,7 @@ class Transaction {
 
 // Individual block on the chain
 class Block {
-
+  // A one time use random number
   public nonce = Math.round(Math.random() * 999999999);
 
   constructor(
@@ -44,6 +44,10 @@ class Block {
 class Chain {
   // Singleton instance
   public static instance = new Chain();
+  // Choice of algorithm 'MD5' (128-bit) or 'SHA-256' (slower)
+  public algorithm = 'MD5';
+  // Choice of difficulty 
+  public difficulty = 4;
 
   chain: Block[];
 
@@ -64,14 +68,16 @@ class Chain {
     let solution = 1;
     console.log('⛏️  mining...')
 
+    // Brute force computation creating a hash until a it matches difficulty level
     while(true) {
 
-      const hash = crypto.createHash('MD5');
+      const hash = crypto.createHash(this.algorithm);
+
       hash.update((nonce + solution).toString()).end();
 
       const attempt = hash.digest('hex');
 
-      if(attempt.substr(0,4) === '0000'){
+      if(attempt.substr(0,4) === Array(this.difficulty + 1).join('0')){
         console.log(`Solved: ${solution}`);
         return solution;
       }
