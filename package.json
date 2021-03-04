@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsc -w",
     "start": "tsc && node .",
-    "test": "node test"
+    "test-transaction": "node ./tests/transaction",
+    "test": "node ./tests/test"
   },
   "keywords": [],
   "author": "",
