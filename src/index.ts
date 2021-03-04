@@ -6,7 +6,7 @@ class Transaction {
     public amount: number, 
     public sender: string, // public key
     public receiver: string, // public key
-    public timestamp: number
+    public timestamp: number // add timestamp
   ) {}
 
   toString() {

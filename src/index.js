@@ -25,7 +25,8 @@ const crypto = __importStar(require("crypto"));
 class Transaction {
     constructor(amount, sender, // public key
     receiver, // public key
-    timestamp) {
+    timestamp // add timestamp
+    ) {
         this.amount = amount;
         this.sender = sender;
         this.receiver = receiver;
