@@ -22,6 +22,22 @@ To install as a module in your code, use node:
 ```
 npm install --save github:weigriffiths/obsidian-cryptocurrency
 ```
+To create a new wallet 💰 and get public key:
+```
+const <account-name> = new Wallet()
+
+const publicKey = <account-name>.publicKey
+```
+To send money 💵:
+```
+<account-name>.sendMoney(amount, publicKey)
+```
+To verify (mine) block ⛏️:
+```
+const pendingTransactions = Chain.instance.pending
+
+Chain.instance.addBlock(pendingTransactions)
+```
 
 # Dev Environment
 In dev mode, run the typescript compiler continuously in watch mode to compile automatically to JavaScript. Use the command <code>npm run dev</code>
