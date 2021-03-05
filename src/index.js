@@ -67,6 +67,7 @@ class Chain {
         this.algorithm = 'MD5';
         // Choice of difficulty 
         this.difficulty = 4;
+        this.pending = [];
         this.chain = [
             // Genesis block
             new Block('', new Transaction(100, 'genesis', 'satoshi', 1566302400))
@@ -94,23 +95,36 @@ class Chain {
     }
     // Add transactions to a pending list
     addToPending(transaction, senderPublicKey, signature) {
-        return null;
+        this.pending.push({ transaction: transaction, senderPublicKey: senderPublicKey, signature: signature });
+        return this.pending;
     }
     // Add a new block to the chain if valid signature & proof of work is complete
-    addBlock(transaction, senderPublicKey, signature) {
-        const verify = crypto.createVerify('SHA256');
-        verify.update(transaction.toString());
-        const isValid = verify.verify(senderPublicKey, signature);
-        if (isValid) {
-            const newBlock = new Block(this.lastBlock.hash, transaction);
-            this.mine(newBlock.nonce);
-            this.chain.push(newBlock);
-        }
+    addBlock(pendingTransactions) {
+        this.pending.map(e => {
+            const verify = crypto.createVerify('SHA256');
+            verify.update(e.transaction.toString());
+            const isValid = verify.verify(e.senderPublicKey, e.signature);
+            if (isValid) {
+                const newBlock = new Block(this.lastBlock.hash, e.transaction);
+                this.mine(newBlock.nonce);
+                this.chain.push(newBlock);
+            }
+        });
     }
 }
 exports.Chain = Chain;
 // Singleton instance
 Chain.instance = new Chain();
+// addBlock(transaction: Transaction, senderPublicKey: string, signature: Buffer) {
+//   const verify = crypto.createVerify('SHA256');
+//   verify.update(transaction.toString());
+//   const isValid = verify.verify(senderPublicKey, signature);
+//   if (isValid) {
+//     const newBlock = new Block(this.lastBlock.hash, transaction);
+//     this.mine(newBlock.nonce);
+//     this.chain.push(newBlock);
+//   }
+// }
 // Wallet gives a user a public/private keypair
 class Wallet {
     constructor() {
@@ -128,7 +142,8 @@ class Wallet {
         const sign = crypto.createSign('SHA256');
         sign.update(transaction.toString()).end();
         const signature = sign.sign(this.privateKey);
-        Chain.instance.addBlock(transaction, this.publicKey, signature);
+        Chain.instance.addToPending(transaction, this.publicKey, signature);
+        // Chain.instance.addBlock(transaction, this.publicKey, signature);
     }
 }
 exports.Wallet = Wallet;
