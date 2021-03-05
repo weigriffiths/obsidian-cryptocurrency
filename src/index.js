@@ -92,6 +92,10 @@ class Chain {
             solution += 1;
         }
     }
+    // Add transactions to a pending list
+    addToPending(transaction, senderPublicKey, signature) {
+        return null;
+    }
     // Add a new block to the chain if valid signature & proof of work is complete
     addBlock(transaction, senderPublicKey, signature) {
         const verify = crypto.createVerify('SHA256');
@@ -118,6 +122,7 @@ class Wallet {
         this.privateKey = keypair.privateKey;
         this.publicKey = keypair.publicKey;
     }
+    // Send money by signing transaction
     sendMoney(amount, receiverPublicKey) {
         const transaction = new Transaction(amount, this.publicKey, receiverPublicKey, Date.now());
         const sign = crypto.createSign('SHA256');
